@@ -1,10 +1,10 @@
 from typing import Optional, List
 from fastapi import FastAPI, Path, Query
 from pydantic import BaseModel
-import models
+import models.models as models
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine
-import drivers
+from database.database import engine
+import routers.drivers as drivers
 
 models.Base.metadata.create_all(bind=engine)
 

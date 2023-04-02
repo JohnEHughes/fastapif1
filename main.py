@@ -1,10 +1,10 @@
-from typing import Optional, List
-from fastapi import FastAPI, Path, Query
-from pydantic import BaseModel
-import models.models as models
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from database.database import engine
-import routers.drivers as drivers
+from routers import drivers
+from models import models
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -36,5 +36,3 @@ app.include_router(drivers.router, tags=["Drivers"], prefix="")
 @app.get("/healthchecker")
 def root():
     return {"message": "Welcome to the Formula 1 information repo"}
-
-# uvicorn main:app --host localhost --port 8000 --reload

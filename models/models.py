@@ -1,7 +1,7 @@
+from sqlalchemy import Column, String, Boolean, Integer
+
 from database.database import Base
-from sqlalchemy import TIMESTAMP, Column, String, Boolean, Integer
-from sqlalchemy.sql import func
-from fastapi_utils.guid_type import GUID, GUID_DEFAULT_SQLITE
+
 
 
 class Driver(Base):

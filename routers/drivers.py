@@ -10,10 +10,10 @@ from schema import schemas
 router = APIRouter()
 
 
-@router.get("/drivers")
+@router.get("/drivers", tags=["drivers"])
 async def get_drivers(db: Session = Depends(get_db)):
     all_drivers = db.query(models.Driver).all()
-    return {"status": "success", "results": len(all_drivers), "drivers": all_drivers}
+    return {"data": all_drivers}
 
 
 @router.get("/drivers/{id}")

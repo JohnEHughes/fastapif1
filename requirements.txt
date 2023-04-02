@@ -7,3 +7,4 @@ fastapi=0.95.0
 pytest=7.2.2
 requests=2.28.2
 httpx=0.23.3
+nodejs=19.8.1

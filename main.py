@@ -33,6 +33,6 @@ app.add_middleware(
 app.include_router(drivers.router, tags=["Drivers"], prefix="")
 
 
-@app.get("/healthchecker")
+@app.get("/")
 def root():
     return {"message": "Welcome to the Formula 1 information repo"}

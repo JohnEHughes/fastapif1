@@ -7,7 +7,7 @@ from main import app
 class TestDrivers:
 
     def test_healthchecker(self, client):
-        response = client.get("/healthchecker")
+        response = client.get("/")
         assert response.status_code == status.HTTP_200_OK 
         assert response.json()  == {"message": "Welcome to the Formula 1 information repo"}
 

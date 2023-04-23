@@ -1,9 +1,9 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 
-from database.database import get_db
-from models import models
-from schema import schemas
+from database import get_db
+from models import drivers
+from schema import driver
 
 
 
@@ -12,13 +12,13 @@ router = APIRouter()
 
 @router.get("/drivers", tags=["drivers"])
 async def get_drivers(db: Session = Depends(get_db)):
-    all_drivers = db.query(models.Driver).all()
+    all_drivers = db.query(drivers.Driver).all()
     return {"data": all_drivers}
 
 
 @router.get("/drivers/{id}")
 async def get_driver(id: int, db: Session = Depends(get_db)):
-    driver_model = db.query(models.Driver).filter(models.Driver.id == id)
+    driver_model = db.query(drivers.Driver).filter(drivers.Driver.id == id)
     db_driver_model = driver_model.first()
 
     if not db_driver_model:
@@ -28,8 +28,8 @@ async def get_driver(id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/drivers")
-async def create_driver(payload: schemas.DriverSchema, db: Session = Depends(get_db)):
-    new_driver = models.Driver(**payload.dict())
+async def create_driver(payload: driver.DriverSchema, db: Session = Depends(get_db)):
+    new_driver = drivers.Driver(**payload.dict())
     db.add(new_driver)
     db.commit()
     db.refresh(new_driver)
@@ -37,8 +37,8 @@ async def create_driver(payload: schemas.DriverSchema, db: Session = Depends(get
 
 
 @router.patch("/drivers/{id}")
-async def update_driver(id: int, payload: schemas.DriverSchema, db: Session = Depends(get_db)):
-    driver_model = db.query(models.Driver).filter(models.Driver.id == id)
+async def update_driver(id: int, payload: driver.DriverSchema, db: Session = Depends(get_db)):
+    driver_model = db.query(drivers.Driver).filter(drivers.Driver.id == id)
     db_driver_model = driver_model.first()
 
     if not db_driver_model:
@@ -55,7 +55,7 @@ async def update_driver(id: int, payload: schemas.DriverSchema, db: Session = De
 
 @router.delete("/drivers/{id}")
 async def delete_driver(id: int, db: Session = Depends(get_db)):
-    driver_model = db.query(models.Driver).filter(models.Driver.id == id)
+    driver_model = db.query(drivers.Driver).filter(drivers.Driver.id == id)
     db_driver_model = driver_model.first()
 
     if not db_driver_model:

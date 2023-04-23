@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os, sys
+import database
+from routers import drivers as driver_router
+from routers import teams as team_router
+from models import drivers
+from models import teams
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from database.database import engine
-from routers import drivers
-from models import models
-
-
-models.Base.metadata.create_all(bind=engine)
+drivers.Base.metadata.create_all(bind=database.engine)
+teams.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(
     title="Fast API F1",
@@ -30,7 +33,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(drivers.router, tags=["Drivers"], prefix="")
+app.include_router(driver_router.router, tags=["Drivers"], prefix="")
+app.include_router(team_router.router, tags=["Teams"], prefix="")
 
 
 @app.get("/")

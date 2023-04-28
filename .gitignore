@@ -532,4 +532,8 @@ google-services.json
 .history
 .ionide
 
+
+*.http
+*.csv
+*.db
 # End of https://www.toptal.com/developers/gitignore/api/node,reactnative,python,linux,visualstudiocode

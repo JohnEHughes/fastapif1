@@ -1,9 +1,12 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
-
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# from utils.requests import get_db
+import pandas as pd
 from database import get_db
-from models import drivers
-from schema import driver
+from src.models import drivers
+from src.schema import driver
 
 
 
@@ -30,6 +33,7 @@ async def get_driver(id: int, db: Session = Depends(get_db)):
 @router.post("/drivers")
 async def create_driver(payload: driver.DriverSchema, db: Session = Depends(get_db)):
     new_driver = drivers.Driver(**payload.dict())
+
     db.add(new_driver)
     db.commit()
     db.refresh(new_driver)
@@ -64,3 +68,27 @@ async def delete_driver(id: int, db: Session = Depends(get_db)):
     driver_model.delete(synchronize_session=False)
     db.commit()
     return {"status": "success", "driver": "Deleted"}
+
+
+@router.get("/driver_wins")
+async def get_driver_wins_csv(db: Session = Depends(get_db)):
+    all_drivers = db.query(drivers.Driver).all()
+
+    drivers_list = [{
+                "first_name": driver.first_name,
+                "last_name": driver.last_name, 
+                "team_name": driver.team.name,
+                "race_wins": driver.total_race_wins
+                       } for driver in all_drivers]
+    
+
+    drivers_df = pd.DataFrame(drivers_list)
+
+    drivers_df = drivers_df.sort_values(by=['race_wins'], ascending=False)
+    drivers_df.to_csv("race_wins_by_driver.csv", index=False, columns=[
+        'first_name', 
+        'last_name',
+        'team_name',
+        'race_wins'])
+
+    return {"status": "success"}

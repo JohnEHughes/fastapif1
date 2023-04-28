@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+# import os, sys
 import os, sys
-import database
-from routers import drivers as driver_router
-from routers import teams as team_router
-from models import drivers
-from models import teams
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import database
+
+from src.routers import drivers as driver_router
+from src.routers import teams as team_router
+from src.models import drivers
+from src.models import teams
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 drivers.Base.metadata.create_all(bind=database.engine)
 teams.Base.metadata.create_all(bind=database.engine)

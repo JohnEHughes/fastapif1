@@ -109,10 +109,8 @@ async def get_active_driver_csv(id: int, request: Request = None, db: Session = 
         'total_race_wins', 
         'total_podiums', 
         'total_points']
+    
     active_df = pd.DataFrame(active_drivers)
-    # loss_col = active_df["total_races"].sub(active_df["total_race_wins"])
-    # active_df = active_df.assign(total_losses=lambda x: x.total_races - x.total_race_wins)
-
     col_heads = payload.get("col_heads", None)
 
     if col_heads:
@@ -122,7 +120,9 @@ async def get_active_driver_csv(id: int, request: Request = None, db: Session = 
     losses = payload.get("losses", None)
     if losses:
         col_loss_name = f"num_losses_more_than_{losses}"
-        active_df[col_loss_name] = np.where((active_df['total_races'].sub(active_df['total_race_wins']))>losses, active_df['total_races']-active_df['total_race_wins']-5, 0)
+        active_df[col_loss_name] = np.where((active_df['total_races']
+                                             .sub(active_df['total_race_wins'])) > losses, 
+                                             active_df['total_races'] - active_df['total_race_wins'] - losses, 0)
         col_heads.append(col_loss_name)
     
     active_df.to_csv(f"{team.name}_-_active_ drivers_list.csv", index=False, columns=col_heads)
@@ -175,7 +175,36 @@ async def get_team_wins_csv(db: Session = Depends(get_db)):
     teams_df['race_wins'] = race_wins
     teams_df = teams_df.sort_values(by=['race_wins'], ascending=False)
     teams_df.to_csv("race_wins_by_team.csv", index=False, columns=['name', 'race_wins'])
-    # import pdb; pdb.set_trace()
+
     return {"status": "success"}
 
 
+@router.get("/team_input")
+async def team_input(db: Session = Depends(get_db)):
+    team_list = pd.read_csv("/home/john/Documents/repos/learning/fastapif1/teams.csv")
+
+    for index, team in team_list.iterrows():
+        # import pdb; pdb.set_trace()
+        payload = {
+            "name": team['name'], 
+            "boss_name": team['boss_name'], 
+            "location": team['location']
+            }
+
+        new_team = teams.Team(**payload)
+        db.add(new_team)
+        db.commit()
+        db.refresh(new_team)
+
+    return {"status": "success"}
+
+
+# @router.delete("/delete_all_teams")
+# async def team_delete_input(db: Session = Depends(get_db)):
+#     import pdb; pdb.set_trace()
+
+#     teams = db.query(teams.Team).all()
+#     for team in teams:
+#         team.delete()
+#         db.commit()
+#     return {"status": "success"}

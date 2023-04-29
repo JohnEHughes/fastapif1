@@ -181,3 +181,8 @@ class TestDrivers:
 
         teams_response = client.get("/driver_wins")
         assert teams_response.status_code == status.HTTP_200_OK 
+
+
+
+    def test_driver_input(self, client, test_db):
+        response = client.get("/driver_input")

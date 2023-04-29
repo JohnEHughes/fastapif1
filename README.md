@@ -1,3 +1,22 @@
+# new route team_id as path param
+# by default return csv with all the active drivers for the team
+
+
+
+# add arg - List of col headings - 
+# construct csv with these columns but always include the id col
+
+# in addition to the col headings, if the arg total race losses is passed, return that
+# via pandas calculating win from total
+
+# second endpoint - no path params
+# return a csv showing total no. of race wins per team, separated by team and ordered from
+# highest to lowest
+
+# bonus points
+# test with pandas - the parts with the csv construction
+# https://pandas.pydata.org/docs/reference/testing.html
+
 # fastapif1
 
 

@@ -354,3 +354,6 @@ class TestTeams:
         teams_response = client.get(f"/team_wins")
         assert teams_response.status_code == status.HTTP_200_OK 
 
+
+    # def test_team_input(self, client, test_db):
+    #     response = client.get("/team_input")

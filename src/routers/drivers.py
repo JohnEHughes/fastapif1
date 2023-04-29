@@ -7,7 +7,7 @@ import pandas as pd
 from database import get_db
 from src.models import drivers
 from src.schema import driver
-
+from dateutil.parser import parse
 
 
 router = APIRouter()
@@ -90,5 +90,32 @@ async def get_driver_wins_csv(db: Session = Depends(get_db)):
         'last_name',
         'team_name',
         'race_wins'])
+
+    return {"status": "success"}
+
+
+@router.get("/driver_input")
+async def driver_input(db: Session = Depends(get_db)):
+    driver_list = pd.read_csv("/home/john/Documents/repos/learning/fastapif1/drivers.csv")
+
+    for index, driver in driver_list.iterrows():
+        # import pdb; pdb.set_trace()
+        payload = {
+            "first_name": driver['first_name'], 
+            "last_name": driver['last_name'], 
+            "age": driver['age'], 
+            "is_active": driver['is_active'], 
+            "team_id": driver['team_id'], 
+            "dob": parse(driver['dob']), 
+            "total_races": driver['total_races'], 
+            "total_race_wins": driver['total_race_wins'], 
+            "total_podiums": driver['total_podiums'], 
+            "total_points": driver['total_points']
+            }
+
+        new_driver = drivers.Driver(**payload)
+        db.add(new_driver)
+        db.commit()
+        db.refresh(new_driver)
 
     return {"status": "success"}

@@ -7,8 +7,7 @@ from typing import List
 from database import get_db
 from src.models import teams
 from src.schema import team
-
-
+from src.crud.team import get_team_by_name
 
 router = APIRouter()
 
@@ -33,6 +32,16 @@ async def get_team(id: int, db: Session = Depends(get_db)):
 @router.post("/teams")
 async def create_team(payload: team.TeamSchema, db: Session = Depends(get_db)):
     new_team = teams.Team(**payload.dict())
+    try:
+        name = new_team.name
+
+    except KeyError:
+        return {"status": "key error"}
+    
+    check_team = get_team_by_name(db, name)
+    if check_team:
+        return {"status": "Team already exists"}
+    
     db.add(new_team)
     db.commit()
     db.refresh(new_team)
@@ -184,12 +193,21 @@ async def team_input(db: Session = Depends(get_db)):
     team_list = pd.read_csv("/home/john/Documents/repos/learning/fastapif1/teams.csv")
 
     for index, team in team_list.iterrows():
-        # import pdb; pdb.set_trace()
         payload = {
             "name": team['name'], 
             "boss_name": team['boss_name'], 
             "location": team['location']
             }
+        
+        try:
+            name = payload.get("name")
+
+        except KeyError:
+            return {"status": "key error"}
+    
+        check_team = get_team_by_name(db, name)
+        if check_team:
+            return {"status": "Team already exists"}
 
         new_team = teams.Team(**payload)
         db.add(new_team)
@@ -198,13 +216,3 @@ async def team_input(db: Session = Depends(get_db)):
 
     return {"status": "success"}
 
-
-# @router.delete("/delete_all_teams")
-# async def team_delete_input(db: Session = Depends(get_db)):
-#     import pdb; pdb.set_trace()
-
-#     teams = db.query(teams.Team).all()
-#     for team in teams:
-#         team.delete()
-#         db.commit()
-#     return {"status": "success"}

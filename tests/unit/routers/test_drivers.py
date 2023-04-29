@@ -1,5 +1,6 @@
 from fastapi import status
-
+import datetime
+import json
 
 class TestDrivers:
 
@@ -18,7 +19,7 @@ class TestDrivers:
         response = add_one_driver
         assert response.status_code == status.HTTP_200_OK 
         assert response.json()["status"] == "success"
-        # import pdb; pdb.set_trace()
+
         created_driver_id = response.json()["driver"]["id"]
         driver_response = client.get(f"/drivers/{created_driver_id}")
         assert driver_response.status_code == status.HTTP_200_OK 
@@ -184,5 +185,19 @@ class TestDrivers:
 
 
 
-    def test_driver_input(self, client, test_db):
-        response = client.get("/driver_input")
+    def test_create_driver_stats(self, client, test_db):
+        driver_payload = {
+            "first_name": "Test First", 
+            "last_name": "Test Last", 
+            "age": 99, 
+            "is_active": True,
+            "team_id": 0,
+            "dob": 1924,
+            "total_races": 45,
+            "total_race_wins": 3,
+            "total_podiums": 6,
+            "total_points": 0
+            }
+        # payload = json.dumps(driver_payload)
+        second_driver_response = client.post("/drivers", json=driver_payload)
+        assert second_driver_response.status_code == status.HTTP_200_OK 

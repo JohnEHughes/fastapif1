@@ -17,6 +17,7 @@ router = APIRouter()
 @router.get("/drivers", tags=["drivers"])
 async def get_drivers(db: Session = Depends(get_db)):
     all_drivers = db.query(drivers.Driver).all()
+
     return {"data": all_drivers}
 
 

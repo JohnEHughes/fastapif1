@@ -49,3 +49,11 @@ Start your React app from the terminal:
 ```
 $ npm run start
 ```
+
+
+##
+
+Run the streamlit browser
+```
+streamlit run full_stream.py
+```

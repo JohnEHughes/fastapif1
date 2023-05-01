@@ -1,6 +1,6 @@
 from typing import List
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, date
 
 
 class DriverSchema(BaseModel):
@@ -9,7 +9,7 @@ class DriverSchema(BaseModel):
     age: int
     is_active: bool = False
     team_id: int
-    dob: datetime
+    dob: date
     total_races: int = 0
     total_race_wins: int = 0
     total_podiums: int = 0

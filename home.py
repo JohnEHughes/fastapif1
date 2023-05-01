@@ -1,37 +1,25 @@
 import streamlit as st
 import pandas as pd
-import requests
-from datetime import datetime
-from database import get_db
-from sqlalchemy.orm import Session
-from src.models import drivers
-from fastapi import Depends, HTTPException, APIRouter
-import time
+
+from streamlit_utils.config import get_driver_data
 
 
-
-st.title("Welcome to my own day project!")
-
-
-
-# @st.cache_data
-def get_data():
-    response = requests.get(url="http://localhost:3000/drivers")
-    return response.json().get("data")
-
+st.set_page_config(
+    page_title="F1 Stats",
+    page_icon="favicon.ico",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 st.title("F1 Driver stats")
 st.text("Simple stats on current Formula 1 drivers")
 
-
-
-driver_data = pd.DataFrame(get_data()).reset_index(drop=True)
-st.dataframe(driver_data.set_index('last_name'), height=735)
+driver_data = pd.DataFrame(get_driver_data()).reset_index(drop=True)
+st.dataframe(driver_data.set_index('last_name'), height=350)
 
 st.divider()
 
 with st.expander("Race Wins"):
-
     st.subheader("Race Wins per Driver")
 
     name_most_wins = driver_data.loc[driver_data['total_race_wins'].idxmax()].last_name
@@ -49,7 +37,6 @@ with st.expander("Race Wins"):
 
 
 with st.expander("Total Points per Driver"):
-
     st.subheader("Total Points per Driver")
 
     name_most_points = driver_data.loc[driver_data['total_points'].idxmax()].last_name
@@ -62,5 +49,3 @@ with st.expander("Total Points per Driver"):
     col2.metric(label=f"Most Points - {name_most_points}", value=most_points)
     col2.metric(label=f"Ave Points Per Driver", value=ave_points)
     col2.metric(label=f"No. 1000pts+", value=more_than_thousand)
-
-

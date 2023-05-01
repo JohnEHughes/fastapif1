@@ -1,23 +1,14 @@
-import streamlit as st
-import pandas as pd
 import requests
 import json
-from json import JSONEncoder
-from full_stream import get_data
-import datetime
-from datetime import datetime, date
-from database import get_db
-from sqlalchemy.orm import Session
-from src.models import drivers
-from fastapi import Depends, HTTPException, APIRouter
 
+import streamlit as st
+import pandas as pd
+
+from datetime import datetime, date
+from streamlit_utils.config import DateTimeEncoder
 
 st.title("Add Driver To Database")
-
 st.subheader("Please enter new driver:")
-
-
-
 
 
 teams_response = requests.get(url=f"http://localhost:3000/teams")
@@ -53,10 +44,6 @@ with st.form("driver_form"):
 
     submitted = st.form_submit_button("Submit")
     if submitted:
-        class DateTimeEncoder(JSONEncoder):
-                def default(self, obj):
-                    if isinstance(obj, (date, datetime)):
-                        return int(obj.isoformat()[:4])
 
         payload = {
             "first_name": first_name, 
@@ -73,7 +60,7 @@ with st.form("driver_form"):
 
         json_payload = json.loads(DateTimeEncoder().encode(payload))
 
-        headers = {'Content-type': 'application/json', 'Accept':'text/plain'}
+        headers = {'Content-type':'application/json', 'Accept':'text/plain'}
         driver_response = requests.post(
              url="http://localhost:3000/drivers", 
              headers=headers, 

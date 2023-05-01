@@ -1,21 +1,22 @@
+import requests
+
 import streamlit as st
 import pandas as pd
-import requests
-from full_stream import get_data
-from datetime import datetime
-from database import get_db
-from sqlalchemy.orm import Session
-from src.models import drivers
-from fastapi import Depends, HTTPException, APIRouter
+
+from streamlit_utils.config import get_driver_data
 
 
 st.title("Driver Race Details")
-
 st.subheader("Please enter a driver ID:")
 
+col4, col5 = st.columns(spec=[3, 1])
 
+with col5:
+    driver_data = pd.DataFrame(get_driver_data()).reset_index(drop=True)
+    driver_and_id = driver_data[['last_name', 'id']].reset_index(drop=True).set_index('last_name')
 
-col4, col5 = st.columns(spec=[3, 2])
+    expander = st.expander("Driver IDs")
+    expander.dataframe(driver_and_id, height=400)
 
 with col4:
     driver_id = st.text_input('Driver Id', key='driver_id')
@@ -56,11 +57,3 @@ with col4:
                 st.experimental_rerun()
             else:
                 st.write('Error deleting driver')
-        
-
-with col5:
-    driver_data = pd.DataFrame(get_data()).reset_index(drop=True)
-    driver_and_id = driver_data[['last_name', 'id']].reset_index(drop=True).set_index('last_name')
-
-    expander = st.expander("Driver IDs")
-    expander.dataframe(driver_and_id, height=735)

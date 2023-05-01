@@ -7,8 +7,9 @@ import pandas as pd
 from datetime import datetime, date
 from streamlit_utils.config import DateTimeEncoder
 
-st.title("Add Driver To Database")
-st.subheader("Please enter new driver:")
+st.title("Add Driver")
+
+st.subheader("Please enter new Driver:")
 
 
 teams_response = requests.get(url=f"http://localhost:3000/teams")
@@ -62,15 +63,14 @@ with st.form("driver_form"):
 
         headers = {'Content-type':'application/json', 'Accept':'text/plain'}
         driver_response = requests.post(
-             url="http://localhost:3000/drivers", 
-             headers=headers, 
-             json=json_payload
-             )
+            url="http://localhost:3000/drivers", 
+            headers=headers, 
+            json=json_payload
+            )
 
         if driver_response.json().get("status") == "success":
-            st.write("Driver added successfully.")
+            st.success("Driver added successfully.")
         elif driver_response.json().get("status") == "Driver already exists":
-            st.write("Driver already exists.")
+            st.warning("Driver already exists.")
         else:
-            st.write("Driver errored")
-             
+            st.error("Driver errored")

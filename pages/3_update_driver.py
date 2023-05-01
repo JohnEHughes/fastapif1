@@ -73,8 +73,6 @@ with col4:
             submitted = st.form_submit_button("Update Driver")
             if submitted:
 
-                create_update(f"http://localhost:3000/drivers/{driver_id}", "Driver updated.")
-
                 payload = {
                     "first_name": first_name, 
                     "last_name": last_name, 
@@ -98,9 +96,9 @@ with col4:
                     )
 
                 if driver_response.json().get("status") == "success":
-                    st.write("Driver updated.")
+                    st.success("Driver updated.")
                 elif driver_response.json().get("status") == "Driver already exists":
-                    st.write("Driver already exists.")
+                    st.warning("Driver already exists.")
                 else:
-                    st.write("Driver errored")
+                    st.error("Driver errored")
                     

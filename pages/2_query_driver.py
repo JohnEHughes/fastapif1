@@ -44,7 +44,6 @@ with col4:
         podium_perc = f"{(driver['total_podiums'] / driver['total_races']):.1%}" if driver['total_podiums'] > 0 else f"0%"
         points_per_race = f"{(driver['total_points'] / driver['total_races']):.1f}" if driver['total_points'] > 0 else f"0"
 
-
         col1.metric(label=f"Win Percentage", value=win_perc)
         col2.metric(label=f"Podium Percentage", value=podium_perc)
         col3.metric(label=f"Points Per Race", value=points_per_race)
@@ -53,7 +52,6 @@ with col4:
             delete_response = requests.delete(url=f"http://localhost:3000/drivers/{driver_id}")
             delete_status = delete_response.json().get('status')
             if delete_status == "success":
-                st.write('Driver deleted.')
                 st.experimental_rerun()
             else:
-                st.write('Error deleting driver')
+                st.error('Error deleting driver')

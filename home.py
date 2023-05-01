@@ -35,7 +35,6 @@ with st.expander("Race Wins"):
     col1.metric(label=f"No. Winning Drivers", value=num_winning_drivers)
     col2.bar_chart(data=driver_data, x="last_name", y="total_race_wins")
 
-
 with st.expander("Total Points per Driver"):
     st.subheader("Total Points per Driver")
 

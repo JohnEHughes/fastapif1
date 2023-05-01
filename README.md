@@ -55,5 +55,5 @@ $ npm run start
 
 Run the streamlit browser
 ```
-streamlit run full_stream.py
+streamlit run home.py
 ```

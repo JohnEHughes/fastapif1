@@ -25,13 +25,18 @@ with st.expander("Team Wins"):
         submitted = st.form_submit_button("Submit")
 
         if submitted:
+            col1, col2 = st.columns([1,2])
+
             response = requests.get(url="http://localhost:3000/team_wins")
             response_json = response.json().get("status")
-            st.text(f"wins_by_team.csv")
+            col1.text(f"wins_by_team.csv")
 
-            team_wins_csv = pd.read_csv(f"src/wins_by_team.csv")
+            team_wins_csv = pd.read_csv("./static/wins_by_team.csv")
+
             csv_df = pd.DataFrame(team_wins_csv).reset_index(drop=True)
-            st.dataframe(csv_df.set_index('name'))
+            col1.dataframe(csv_df.set_index('name'))
+
+            col2.bar_chart(data=csv_df, x="name", y="race_wins", height=400)
 
 with st.expander("Individual Team Reports"):
     st.subheader("Individual Team Report CSV")
@@ -60,6 +65,6 @@ with st.expander("Individual Team Reports"):
         if submitted:
             st.text(f"CSV produced - {option_team_name}_-_active_ drivers_list.csv")
 
-            team_csv = pd.read_csv(f"src/{option_team_name}_-_active_ drivers_list.csv")
+            team_csv = pd.read_csv(f"./static/{option_team_name}_-_active_ drivers_list.csv")
             csv_df = pd.DataFrame(team_csv).reset_index(drop=True)
             st.dataframe(csv_df.set_index('id'))

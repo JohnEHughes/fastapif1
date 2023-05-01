@@ -132,7 +132,7 @@ async def get_active_driver_csv(id: int, request: Request = None, db: Session = 
         active_df[col_loss_name] = active_df['total_races'] - active_df['total_race_wins']
         col_heads.append(col_loss_name)
     
-    active_df.to_csv(f"{team.name}_-_active_ drivers_list.csv", index=False, columns=col_heads)
+    active_df.to_csv(f"../static/{team.name}_-_active_ drivers_list.csv", index=False, columns=col_heads)
 
     return {"status": "success"}
 
@@ -178,12 +178,11 @@ async def get_team_wins_csv(db: Session = Depends(get_db)):
                        } for team in all_teams]
     
     teams_df = pd.DataFrame(teams_list)
-    # race_wins = [sum([i.total_race_wins for i in item]) for item in teams_df.drivers]
     race_wins = [sum([i.total_race_wins for i in item]) for item in teams_df.drivers]
 
     teams_df['race_wins'] = race_wins
     teams_df = teams_df.sort_values(by=['race_wins'], ascending=False)
-    teams_df.to_csv("wins_by_team.csv", index=False, columns=['name', 'race_wins'])
+    teams_df.to_csv("../static/wins_by_team.csv", index=False, columns=['name', 'race_wins'])
 
     return {"status": "success"}
 

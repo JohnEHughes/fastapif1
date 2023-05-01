@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 import requests
 import json
+from json import JSONEncoder
 from full_stream import get_data
+import datetime
 from datetime import datetime, date
 from database import get_db
 from sqlalchemy.orm import Session
@@ -35,10 +37,6 @@ with st.form("driver_form"):
     option_team_name = st.selectbox('Which team?', (team_names))
     team_id = teams_df[teams_df['name']==option_team_name]['id'].values[0]
 
-
-
-
-
     col2.text('Is the Driver active?')
     is_active = col2.checkbox(label='Active', value=True)
 
@@ -55,16 +53,10 @@ with st.form("driver_form"):
 
     submitted = st.form_submit_button("Submit")
     if submitted:
-
-        st.write(f"{first_name}{type(team_id)}{is_active}{type(dob)}{age}")
-        def json_serial(obj):
-            """JSON serializer for objects not serializable by default json code"""
-
-            if isinstance(obj, (datetime, date)):
-                return obj.isoformat()
-            raise TypeError ("Type %s not serializable" % type(obj))
-        
-        json_dob = json.dumps(dob, default=json_serial)
+        class DateTimeEncoder(JSONEncoder):
+                def default(self, obj):
+                    if isinstance(obj, (date, datetime)):
+                        return int(obj.isoformat()[:4])
 
         payload = {
             "first_name": first_name, 
@@ -72,16 +64,26 @@ with st.form("driver_form"):
             "age": age, 
             "is_active": is_active,
             "team_id": int(team_id),
-            "dob": json_dob,
             "total_races": int(total_races),
             "total_race_wins": int(total_race_wins),
             "total_podiums": int(total_podiums),
-            "total_points": float(total_points)
+            "total_points": float(total_points),
+            "dob": dob,
         }
-        # import pdb; pdb.set_trace()
 
-        json_payload = json.dumps(payload, default=str)
-        driver_response = requests.post(url=f"http://localhost:3000/drivers", json=json_payload)
-        # import pdb; pdb.set_trace()
-        st.write(f"{driver_response.json()} - {driver_response.status_code}")
+        json_payload = json.loads(DateTimeEncoder().encode(payload))
 
+        headers = {'Content-type': 'application/json', 'Accept':'text/plain'}
+        driver_response = requests.post(
+             url="http://localhost:3000/drivers", 
+             headers=headers, 
+             json=json_payload
+             )
+
+        if driver_response.json().get("status") == "success":
+            st.write("Driver added successfully.")
+        elif driver_response.json().get("status") == "Driver already exists":
+            st.write("Driver already exists.")
+        else:
+            st.write("Driver errored")
+             

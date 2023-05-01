@@ -13,7 +13,7 @@ class DriverSchema(BaseModel):
     total_races: int = 0
     total_race_wins: int = 0
     total_podiums: int = 0
-    total_points: int = 0
+    total_points: float = 0.0
 
     class Config:
         orm_mode = True

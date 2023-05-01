@@ -34,6 +34,8 @@ async def get_driver(id: int, db: Session = Depends(get_db)):
 
 @router.post("/drivers")
 async def create_driver(payload: driver.DriverSchema, db: Session = Depends(get_db)):
+    # import pdb; pdb.set_trace()
+    
     new_driver = drivers.Driver(**payload.dict())
 
     try:

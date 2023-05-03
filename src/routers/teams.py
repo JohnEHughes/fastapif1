@@ -1,7 +1,9 @@
 from fastapi import Depends, HTTPException, APIRouter, Request, Query
 from sqlalchemy.orm import Session
+from pathlib import Path
 import pandas as pd
 import numpy as np
+import os
 from typing import List
 # from utils.requests import get_db
 from database import get_db
@@ -131,10 +133,10 @@ async def get_active_driver_csv(id: int, request: Request = None, db: Session = 
         col_loss_name = f"no_losses"
         active_df[col_loss_name] = active_df['total_races'] - active_df['total_race_wins']
         col_heads.append(col_loss_name)
-    
-    active_df.to_csv(f"../static/{team.name}_-_active_ drivers_list.csv", index=False, columns=col_heads)
 
-    return {"status": "success"}
+    active_df.to_csv(f"{team.name}_-_active_ drivers_list.csv", index=False, columns=col_heads)
+
+    return {"status": "success", "drivers": active_drivers}
 
 
 def desired_column_headings(requested_headings) -> list[str]:
@@ -155,6 +157,7 @@ def desired_column_headings(requested_headings) -> list[str]:
         'total_race_wins', 
         'total_podiums', 
         'total_points'])
+    
     desired_cols = columns.intersection(all_col_names)
     desired_cols.add('id')
     col_list = [col for col in desired_cols]
@@ -182,7 +185,8 @@ async def get_team_wins_csv(db: Session = Depends(get_db)):
 
     teams_df['race_wins'] = race_wins
     teams_df = teams_df.sort_values(by=['race_wins'], ascending=False)
-    teams_df.to_csv("../static/wins_by_team.csv", index=False, columns=['name', 'race_wins'])
+
+    teams_df.to_csv("wins_by_team.csv", index=False, columns=['name', 'race_wins'])
 
     return {"status": "success"}
 

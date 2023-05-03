@@ -2,8 +2,8 @@ from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# from utils.requests import get_db
 import pandas as pd
+
 from database import get_db
 from src.models import drivers
 from src.schema import driver
@@ -34,8 +34,7 @@ async def get_driver(id: int, db: Session = Depends(get_db)):
 
 @router.post("/drivers")
 async def create_driver(payload: driver.DriverSchema, db: Session = Depends(get_db)):
-    # import pdb; pdb.set_trace()
-    
+   
     new_driver = drivers.Driver(**payload.dict())
 
     try:

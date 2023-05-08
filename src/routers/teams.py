@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import os
 from typing import List
-# from utils.requests import get_db
+
 from database import get_db
 from src.models import teams
 from src.schema import team

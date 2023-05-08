@@ -1,6 +1,8 @@
 from fastapi import status
 import datetime
 import json
+import datatest as dt
+import pandas as pd
 
 class TestDrivers:
 
@@ -97,7 +99,6 @@ class TestDrivers:
         second_driver_response = client.post("/drivers", json=driver_payload_2)
         assert second_driver_response.status_code == status.HTTP_200_OK 
 
-
         team_payload_2 = {
             "name": "Red Bull Racing", 
             "boss_name": "Christian Horner", 
@@ -105,7 +106,6 @@ class TestDrivers:
             }
 
         team_response_2 = client.post("/teams", json=team_payload_2)
-        # import pdb; pdb.set_trace()
         created_team_2_id = team_response_2.json().get('team').get('id')
 
         driver_payload_3 = {
@@ -184,7 +184,6 @@ class TestDrivers:
         assert teams_response.status_code == status.HTTP_200_OK 
 
 
-
     def test_create_driver_stats(self, client, test_db):
         driver_payload = {
             "first_name": "Test First", 
@@ -198,6 +197,6 @@ class TestDrivers:
             "total_podiums": 6,
             "total_points": 0
             }
-        # payload = json.dumps(driver_payload)
+
         second_driver_response = client.post("/drivers", json=driver_payload)
         assert second_driver_response.status_code == status.HTTP_200_OK 

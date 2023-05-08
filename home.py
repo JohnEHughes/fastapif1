@@ -13,8 +13,9 @@ st.set_page_config(
 
 st.title("F1 Driver stats")
 st.text("Simple stats on current Formula 1 drivers")
-
+st.sidebar.image("driver.ico")
 driver_data = pd.DataFrame(get_driver_data()).reset_index(drop=True)
+driver_data['dob'] = driver_data['dob'].apply(lambda x: x[:10])
 st.dataframe(driver_data.set_index('last_name'), height=350)
 
 st.divider()
@@ -26,7 +27,6 @@ with st.expander("Race Wins"):
     most_wins = driver_data["total_race_wins"].max()
     ave_wins = driver_data["total_race_wins"].mean().round(1)
     num_winning_drivers = driver_data["total_race_wins"].gt(0).sum()
-
 
     col1, col2 = st.columns(spec=[1, 3])
 

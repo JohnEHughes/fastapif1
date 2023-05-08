@@ -86,3 +86,9 @@ def add_one_team(client, example_team_payload):
     return client.post("/teams", json=example_team_payload)
 
 
+@pytest.mark.mandatory
+def test_columns(df):
+    dt.validate(
+        df.columns,
+        {'first_name', 'last_name', 'team_name', 'race_wins'},
+    )

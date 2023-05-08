@@ -1,7 +1,9 @@
 from fastapi import status
 import pytest
+import requests
 import datatest as dt
 import pandas as pd
+
 
 class TestTeams:
 
@@ -56,6 +58,7 @@ class TestTeams:
         assert team_response_check.json()["team"]["boss_name"] == boss_name
 
 
+   
     def test_get_active_driver_two_active_no_params(self, client, test_db, add_one_team):
 
         response = add_one_team
@@ -95,8 +98,7 @@ class TestTeams:
 
         team_response = client.post(f"/teams/active/{1}", json={})
         assert team_response.status_code == status.HTTP_200_OK 
-
-
+        assert len(team_response.json()["drivers"]) == 2
     def test_get_active_driver_csv_two_active_with_losses(self, client, test_db, add_one_team):
 
         response = add_one_team
@@ -139,6 +141,7 @@ class TestTeams:
         team_response = client.post(f"/teams/active/{1}", json=json)
 
         assert team_response.status_code == status.HTTP_200_OK 
+        assert len(team_response.json()["drivers"]) == 2
         
 
     def test_get_active_driver_csv_two_active_with_col_heads(self, client, test_db, add_one_team):
@@ -182,6 +185,8 @@ class TestTeams:
 
         json = {"col_heads": col_heads}
         team_response = client.post(f"/teams/active/{1}", json=json)
+        assert len(team_response.json()["drivers"]) == 2
+
         test_csv = pd.read_csv('AMG-Mercedes_-_active_ drivers_list.csv')
         dt.validate(test_csv.columns,
                 {'last_name', 'total_races', 'total_race_wins', 'total_podiums', 'total_points', 'id'},)
@@ -228,6 +233,8 @@ class TestTeams:
 
         team_response = client.post(f"/teams/active/{1}", json={})
         assert team_response.status_code == status.HTTP_200_OK 
+
+        assert len(team_response.json()["drivers"]) == 1
 
 
     def test_get_team_wins(self, client, test_db, add_one_team):
@@ -276,7 +283,6 @@ class TestTeams:
             }
 
         team_response_2 = client.post("/teams", json=team_payload_2)
-        # import pdb; pdb.set_trace()
         created_team_2_id = team_response_2.json().get('team').get('id')
 
         driver_payload_3 = {
@@ -354,6 +360,3 @@ class TestTeams:
         teams_response = client.get(f"/team_wins")
         assert teams_response.status_code == status.HTTP_200_OK 
 
-
-    # def test_team_input(self, client, test_db):
-    #     response = client.get("/team_input")

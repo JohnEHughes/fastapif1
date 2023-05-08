@@ -11,7 +11,6 @@ st.title("Add Driver")
 
 st.subheader("Please enter new Driver:")
 
-
 teams_response = requests.get(url=f"http://localhost:3000/teams")
 
 teams = teams_response.json().get('data')
